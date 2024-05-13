@@ -1,12 +1,34 @@
 import numpy as np
+import math
 
 def initialize_centroids_forgy(data, k):
-    # TODO implement random initialization
-    return None
+    randomCentroidsIndex = np.arange(data.shape[0])
+    randomCentroidsIndex = np.random.choice(randomCentroidsIndex, k, replace=False)
+    randomCentroids = data[randomCentroidsIndex]
+    return randomCentroids
 
 def initialize_centroids_kmeans_pp(data, k):
-    # TODO implement kmeans++ initizalization
-    return None
+    def distanceBeatweenNodes(x, y):
+        distance = 0
+        for i in range(len(x)):
+            distance += (x[i] - y[i])**2  
+            
+        return math.sqrt(distance)
+    
+    centroids = []
+    centroids.append(data[np.random.randint(0, data.shape[0])])
+    for i in range(k - 1):
+        furthestDistance = 0
+        for node in data:
+            distance = 0
+            for centroid in centroids:
+                distance += distanceBeatweenNodes(centroid, node)
+            if furthestDistance < distance:
+                furthestDistance = distance
+                furthestNode = node
+        centroids.append(furthestNode)
+        
+    return centroids
 
 def assign_to_cluster(data, centroid):
     # TODO find the closest cluster for each data point
