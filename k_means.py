@@ -4,26 +4,38 @@ import math
 def distanceBeatweenPoints(x, y):
         distance = 0
         for i in range(len(x)):
-            distance += (x[i] - y[i])**2  
-            
+            distance += (x[i] - y[i])**2       
         return math.sqrt(distance)
 
 def initialize_centroids_forgy(data, k):
     randomCentroidsIndex = np.arange(data.shape[0])
     randomCentroidsIndex = np.random.choice(randomCentroidsIndex, k, replace=False)
     randomCentroids = data[randomCentroidsIndex]
-    return np.array(randomCentroids)
+    return np.array(randomCentroids)    
 
 def initialize_centroids_kmeans_pp(data, k):
     centroids = []
     centroids.append(data[np.random.randint(0, data.shape[0])])
     
+    def sumOfDistancesFromCentroids(centroids, point):
+        distance = 0
+        for centroid in centroids:
+                    distance += distanceBeatweenPoints(centroid, point)
+        return distance
+
+    def closestDistanceToCentroid(centroids, point):
+        closestDistance = np.inf
+        for centroid in centroids:
+                    distance = distanceBeatweenPoints(centroid, point)
+                    if distance < closestDistance:
+                        closestDistance = distance
+        return closestDistance
+    
     for _ in range(k - 1):
         furthestDistance = 0
         for point in data:
-            distance = 0
-            for centroid in centroids:
-                distance += distanceBeatweenPoints(centroid, point)
+            #distance = sumOfDistancesFromCentroids(centroids, point)
+            distance = closestDistanceToCentroid(centroids, point)
             if furthestDistance < distance:
                 furthestDistance = distance
                 furthestpoint = point
